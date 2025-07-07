@@ -1,0 +1,672 @@
+[
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "initialOwner",
+				"type": "address"
+			}
+		],
+		"stateMutability": "nonpayable",
+		"type": "constructor"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "owner",
+				"type": "address"
+			}
+		],
+		"name": "OwnableInvalidOwner",
+		"type": "error"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "account",
+				"type": "address"
+			}
+		],
+		"name": "OwnableUnauthorizedAccount",
+		"type": "error"
+	},
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": true,
+				"internalType": "address",
+				"name": "newStore",
+				"type": "address"
+			},
+			{
+				"indexed": true,
+				"internalType": "address",
+				"name": "previousStore",
+				"type": "address"
+			}
+		],
+		"name": "NewDataStoreCreated",
+		"type": "event"
+	},
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": true,
+				"internalType": "address",
+				"name": "previousOwner",
+				"type": "address"
+			},
+			{
+				"indexed": true,
+				"internalType": "address",
+				"name": "newOwner",
+				"type": "address"
+			}
+		],
+		"name": "OwnershipTransferred",
+		"type": "event"
+	},
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": true,
+				"internalType": "bytes32",
+				"name": "visitorId",
+				"type": "bytes32"
+			}
+		],
+		"name": "ProfileUpdated",
+		"type": "event"
+	},
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": true,
+				"internalType": "uint256",
+				"name": "totalVisitCount",
+				"type": "uint256"
+			},
+			{
+				"indexed": true,
+				"internalType": "address",
+				"name": "dataStore",
+				"type": "address"
+			}
+		],
+		"name": "VisitRecorded",
+		"type": "event"
+	},
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": true,
+				"internalType": "bytes32",
+				"name": "visitorId",
+				"type": "bytes32"
+			},
+			{
+				"indexed": false,
+				"internalType": "uint32",
+				"name": "x",
+				"type": "uint32"
+			},
+			{
+				"indexed": false,
+				"internalType": "uint32",
+				"name": "y",
+				"type": "uint32"
+			},
+			{
+				"indexed": false,
+				"internalType": "uint32",
+				"name": "z",
+				"type": "uint32"
+			}
+		],
+		"name": "VisitorEnteredMap",
+		"type": "event"
+	},
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": true,
+				"internalType": "bytes32",
+				"name": "visitorId",
+				"type": "bytes32"
+			}
+		],
+		"name": "VisitorLeftMap",
+		"type": "event"
+	},
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": true,
+				"internalType": "bytes32",
+				"name": "visitorId",
+				"type": "bytes32"
+			},
+			{
+				"indexed": false,
+				"internalType": "uint32",
+				"name": "x",
+				"type": "uint32"
+			},
+			{
+				"indexed": false,
+				"internalType": "uint32",
+				"name": "y",
+				"type": "uint32"
+			},
+			{
+				"indexed": false,
+				"internalType": "uint32",
+				"name": "z",
+				"type": "uint32"
+			}
+		],
+		"name": "VisitorMoved",
+		"type": "event"
+	},
+	{
+		"inputs": [],
+		"name": "MAX_RECORDS_PER_STORE",
+		"outputs": [
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "bytes32",
+				"name": "_id",
+				"type": "bytes32"
+			},
+			{
+				"internalType": "string",
+				"name": "_avatar",
+				"type": "string"
+			},
+			{
+				"internalType": "string",
+				"name": "_realImg",
+				"type": "string"
+			},
+			{
+				"internalType": "string",
+				"name": "_appearance",
+				"type": "string"
+			},
+			{
+				"internalType": "uint8",
+				"name": "_age",
+				"type": "uint8"
+			},
+			{
+				"internalType": "uint8",
+				"name": "_gender",
+				"type": "uint8"
+			},
+			{
+				"internalType": "string",
+				"name": "_origin",
+				"type": "string"
+			}
+		],
+		"name": "addOrUpdateProfile",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "bytes32[]",
+				"name": "_ids",
+				"type": "bytes32[]"
+			},
+			{
+				"internalType": "string[]",
+				"name": "_avatars",
+				"type": "string[]"
+			},
+			{
+				"internalType": "string[]",
+				"name": "_realImgs",
+				"type": "string[]"
+			},
+			{
+				"internalType": "string[]",
+				"name": "_appearances",
+				"type": "string[]"
+			},
+			{
+				"internalType": "uint8[]",
+				"name": "_ages",
+				"type": "uint8[]"
+			},
+			{
+				"internalType": "uint8[]",
+				"name": "_genders",
+				"type": "uint8[]"
+			},
+			{
+				"internalType": "string[]",
+				"name": "_origins",
+				"type": "string[]"
+			}
+		],
+		"name": "addOrUpdateProfileBatch",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "string",
+				"name": "",
+				"type": "string"
+			}
+		],
+		"name": "countByOrigin",
+		"outputs": [
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "currentDataStore",
+		"outputs": [
+			{
+				"internalType": "contract IVisitorDataStore",
+				"name": "",
+				"type": "address"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "currentRecordCount",
+		"outputs": [
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "bytes32",
+				"name": "_visitorId",
+				"type": "bytes32"
+			},
+			{
+				"internalType": "uint32",
+				"name": "_x",
+				"type": "uint32"
+			},
+			{
+				"internalType": "uint32",
+				"name": "_y",
+				"type": "uint32"
+			},
+			{
+				"internalType": "uint32",
+				"name": "_z",
+				"type": "uint32"
+			}
+		],
+		"name": "enterMap",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint32",
+				"name": "",
+				"type": "uint32"
+			}
+		],
+		"name": "flowInByDay",
+		"outputs": [
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "getActiveVisitors",
+		"outputs": [
+			{
+				"internalType": "bytes32[]",
+				"name": "",
+				"type": "bytes32[]"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "getCurrentDataStoreAddress",
+		"outputs": [
+			{
+				"internalType": "address",
+				"name": "",
+				"type": "address"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "storeAddress",
+				"type": "address"
+			}
+		],
+		"name": "getStoreInfo",
+		"outputs": [
+			{
+				"internalType": "address",
+				"name": "owner",
+				"type": "address"
+			},
+			{
+				"internalType": "address",
+				"name": "previous",
+				"type": "address"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "bytes32",
+				"name": "_visitorId",
+				"type": "bytes32"
+			}
+		],
+		"name": "leaveMap",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "owner",
+		"outputs": [
+			{
+				"internalType": "address",
+				"name": "",
+				"type": "address"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "bytes32",
+				"name": "_visitorId",
+				"type": "bytes32"
+			},
+			{
+				"internalType": "uint256",
+				"name": "_visitTimestamp",
+				"type": "uint256"
+			},
+			{
+				"internalType": "uint256",
+				"name": "_timeSpent",
+				"type": "uint256"
+			},
+			{
+				"internalType": "string",
+				"name": "_emotion",
+				"type": "string"
+			},
+			{
+				"internalType": "string",
+				"name": "_metadata",
+				"type": "string"
+			}
+		],
+		"name": "recordVisit",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "bytes32[]",
+				"name": "_visitorIds",
+				"type": "bytes32[]"
+			},
+			{
+				"internalType": "uint256[]",
+				"name": "_visitTimestamps",
+				"type": "uint256[]"
+			},
+			{
+				"internalType": "uint256[]",
+				"name": "_timeSpents",
+				"type": "uint256[]"
+			},
+			{
+				"internalType": "string[]",
+				"name": "_emotions",
+				"type": "string[]"
+			},
+			{
+				"internalType": "string[]",
+				"name": "_metadatas",
+				"type": "string[]"
+			}
+		],
+		"name": "recordVisitBatch",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "renounceOwnership",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "totalVisitCount",
+		"outputs": [
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "newOwner",
+				"type": "address"
+			}
+		],
+		"name": "transferOwnership",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "bytes32",
+				"name": "_visitorId",
+				"type": "bytes32"
+			},
+			{
+				"internalType": "uint32",
+				"name": "_x",
+				"type": "uint32"
+			},
+			{
+				"internalType": "uint32",
+				"name": "_y",
+				"type": "uint32"
+			},
+			{
+				"internalType": "uint32",
+				"name": "_z",
+				"type": "uint32"
+			}
+		],
+		"name": "updatePosition",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "bytes32",
+				"name": "",
+				"type": "bytes32"
+			}
+		],
+		"name": "visitorPositions",
+		"outputs": [
+			{
+				"internalType": "uint32",
+				"name": "x",
+				"type": "uint32"
+			},
+			{
+				"internalType": "uint32",
+				"name": "y",
+				"type": "uint32"
+			},
+			{
+				"internalType": "uint32",
+				"name": "z",
+				"type": "uint32"
+			},
+			{
+				"internalType": "uint256",
+				"name": "lastUpdate",
+				"type": "uint256"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "bytes32",
+				"name": "",
+				"type": "bytes32"
+			}
+		],
+		"name": "visitorProfiles",
+		"outputs": [
+			{
+				"internalType": "bytes32",
+				"name": "visitorId",
+				"type": "bytes32"
+			},
+			{
+				"internalType": "string",
+				"name": "avatarUrl",
+				"type": "string"
+			},
+			{
+				"internalType": "string",
+				"name": "realImageUrl",
+				"type": "string"
+			},
+			{
+				"internalType": "string",
+				"name": "appearanceText",
+				"type": "string"
+			},
+			{
+				"internalType": "uint8",
+				"name": "ageGroup",
+				"type": "uint8"
+			},
+			{
+				"internalType": "uint8",
+				"name": "gender",
+				"type": "uint8"
+			},
+			{
+				"internalType": "string",
+				"name": "origin",
+				"type": "string"
+			},
+			{
+				"internalType": "uint256",
+				"name": "totalTimeSpent",
+				"type": "uint256"
+			},
+			{
+				"internalType": "uint256",
+				"name": "visitCount",
+				"type": "uint256"
+			},
+			{
+				"internalType": "bool",
+				"name": "exists",
+				"type": "bool"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	}
+]
