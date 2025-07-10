@@ -3,7 +3,9 @@ import Sidebar from "../components/dashboard/sidebar";
 import VisitorsMap from "../components/dashboard/visitors-map";
 import GroupTypeChart from "../components/dashboard/group-type-chart";
 import FlowChart from "../components/dashboard/flow-chart";
-import AvgTimeSpentList from "../components/dashboard/avg-time-spent-list";
+// import AvgTimeSpentList from "../components/dashboard/avg-time-spent-list";
+//Demo test
+import DataHistoryList from "../components/dashboard/data-history-list";
 
 export default function DashboardPage() {
   return (
@@ -12,7 +14,7 @@ export default function DashboardPage() {
       {/* Background image với Next Image */}
       <div className="absolute inset-0 -z-10">
         <Image 
-          src="/avatars/background.jpg"
+          src="/avatars/background (1).jpg"
           alt="Background"
           fill
           priority // để load ngay khi trang render (do đây là background)
@@ -30,15 +32,16 @@ export default function DashboardPage() {
           </div>
 
           <div className="lg:col-span-9 grid grid-cols-1 lg:grid-cols-3 gap-6 h-full min-h-0">
-            <div className="lg:col-span-2 grid grid-cols-2 grid-rows-2 gap-6 h-full min-h-0">
+            <div className="lg:col-span-2 grid grid-cols-2 grid-rows-2 gap-4 h-full min-h-0">
               <VisitorsMap />
               <GroupTypeChart />
               <div className="col-span-2">
                 <FlowChart />
               </div>
             </div>
-            <div className="lg:col-span-1">
-              <AvgTimeSpentList />
+            <div className="lg:col-span-1 h-full min-h-0 flex flex-col">
+              {/* <AvgTimeSpentList /> */}
+              <DataHistoryList />
             </div>
           </div>
 

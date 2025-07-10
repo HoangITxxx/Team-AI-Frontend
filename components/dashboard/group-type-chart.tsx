@@ -22,7 +22,7 @@ const COLORS = [
   "hsl(var(--secondary))", // Dark Gray for "Other"
 ];
 
-const ORIGINS_TO_QUERY = ["asian", "white", "black"];
+const ORIGINS_TO_QUERY = ["Asian", "Africa", "Europe", "other"];
 
 const legendData = [
     { name: "Mexico", color: "bg-chart-4" },
@@ -48,17 +48,17 @@ export default function GroupTypeChart() {
 
   // --- PHẦN LOGGING ĐỂ DEBUG ---
   useEffect(() => {
-    console.log("--- GroupTypeChart Hook Status ---");
-    console.log("Is Loading:", isLoading);
-    console.log("Is Success:", isSuccess);
-    console.log("Is Error:", isError);
+    // console.log("--- GroupTypeChart Hook Status ---");
+    // console.log("Is Loading:", isLoading);
+    // console.log("Is Success:", isSuccess);
+    // console.log("Is Error:", isError);
     if (isError) {
       console.error("Error fetching contract data:", error);
     }
     if (isSuccess) {
-      console.log("Data fetched successfully:", originCounts);
+      // console.log("Data fetched successfully:", originCounts);
     }
-    console.log("---------------------------------");
+   // console.log("---------------------------------");
   }, [isLoading, isSuccess, isError, error, originCounts]);
   // -----------------------------
 
@@ -90,18 +90,19 @@ export default function GroupTypeChart() {
   return (
     <Card className="bg-white/10 border-0 text-foreground h-full min-h-0">
       <CardHeader>
-        <CardTitle className="font-extrabold">Group type</CardTitle>
+        <CardTitle className="font-extrabold">Nhóm quốc gia</CardTitle>
       </CardHeader>
       <CardContent className="flex flex-col items-center justify-center h-[calc(100%-4rem)]">
-        <div className="w-full h-60">
-          <ResponsiveContainer width="120%" height="120%">
+        <div className="w-full h-full flex-grow"> {/* Sử dụng h-full và flex-grow */}
+          <ResponsiveContainer width="100%" height="100%">
             <PieChart>
               <Pie
                 data={chartData}
-                cx="40%"
-                cy="40%"
-                innerRadius={50}
-                outerRadius={80}
+                cx="50%" // Canh giữa theo chiều ngang
+                cy="50%" // Canh giữa theo chiều dọc
+                // --- 2. TĂNG BÁN KÍNH ---
+                innerRadius={60} // Tăng bán kính trong
+                outerRadius={100} // Tăng bán kính ngoài
                 fill="#8884d8"
                 paddingAngle={5}
                 dataKey="value"
@@ -109,7 +110,7 @@ export default function GroupTypeChart() {
                 stroke="none"
                 cornerRadius={20}
               >
-                {data.map((entry, index) => (
+                {chartData.map((entry, index) => (
                   <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                 ))}
               </Pie>

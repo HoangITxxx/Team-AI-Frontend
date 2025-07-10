@@ -226,6 +226,11 @@
 				"internalType": "string",
 				"name": "_origin",
 				"type": "string"
+			},
+			{
+				"internalType": "uint16",
+				"name": "_height",
+				"type": "uint16"
 			}
 		],
 		"name": "addOrUpdateProfile",
@@ -269,6 +274,11 @@
 				"internalType": "string[]",
 				"name": "_origins",
 				"type": "string[]"
+			},
+			{
+				"internalType": "uint16[]",
+				"name": "_heights",
+				"type": "uint16[]"
 			}
 		],
 		"name": "addOrUpdateProfileBatch",
@@ -369,6 +379,124 @@
 		"type": "function"
 	},
 	{
+		"inputs": [
+			{
+				"internalType": "uint32",
+				"name": "",
+				"type": "uint32"
+			}
+		],
+		"name": "flowOutByDay",
+		"outputs": [
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "getActiveVisitorCount",
+		"outputs": [
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "_offset",
+				"type": "uint256"
+			},
+			{
+				"internalType": "uint256",
+				"name": "_limit",
+				"type": "uint256"
+			}
+		],
+		"name": "getActiveVisitorProfilesPaginated",
+		"outputs": [
+			{
+				"components": [
+					{
+						"internalType": "bytes32",
+						"name": "visitorId",
+						"type": "bytes32"
+					},
+					{
+						"internalType": "string",
+						"name": "avatarUrl",
+						"type": "string"
+					},
+					{
+						"internalType": "string",
+						"name": "realImageUrl",
+						"type": "string"
+					},
+					{
+						"internalType": "string",
+						"name": "appearanceText",
+						"type": "string"
+					},
+					{
+						"internalType": "uint8",
+						"name": "ageGroup",
+						"type": "uint8"
+					},
+					{
+						"internalType": "uint8",
+						"name": "gender",
+						"type": "uint8"
+					},
+					{
+						"internalType": "string",
+						"name": "origin",
+						"type": "string"
+					},
+					{
+						"internalType": "uint16",
+						"name": "height",
+						"type": "uint16"
+					},
+					{
+						"internalType": "uint256",
+						"name": "totalTimeSpent",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "visitCount",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "lastVisitTimestamp",
+						"type": "uint256"
+					},
+					{
+						"internalType": "bool",
+						"name": "exists",
+						"type": "bool"
+					}
+				],
+				"internalType": "struct VisitorAnalyticsLogic.VisitorProfile[]",
+				"name": "",
+				"type": "tuple[]"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
 		"inputs": [],
 		"name": "getActiveVisitors",
 		"outputs": [
@@ -389,6 +517,30 @@
 				"internalType": "address",
 				"name": "",
 				"type": "address"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint32[]",
+				"name": "dayKeys",
+				"type": "uint32[]"
+			}
+		],
+		"name": "getFlowDataForDays",
+		"outputs": [
+			{
+				"internalType": "uint256[]",
+				"name": "",
+				"type": "uint256[]"
+			},
+			{
+				"internalType": "uint256[]",
+				"name": "",
+				"type": "uint256[]"
 			}
 		],
 		"stateMutability": "view",
@@ -651,6 +803,11 @@
 				"type": "string"
 			},
 			{
+				"internalType": "uint16",
+				"name": "height",
+				"type": "uint16"
+			},
+			{
 				"internalType": "uint256",
 				"name": "totalTimeSpent",
 				"type": "uint256"
@@ -658,6 +815,11 @@
 			{
 				"internalType": "uint256",
 				"name": "visitCount",
+				"type": "uint256"
+			},
+			{
+				"internalType": "uint256",
+				"name": "lastVisitTimestamp",
 				"type": "uint256"
 			},
 			{
