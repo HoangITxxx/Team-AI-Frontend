@@ -2,10 +2,11 @@
 
 import Image from "next/image";
 import { Star, Pencil, UserPlus, User, Hourglass, History, Globe, Smile, Ruler, Badge } from "lucide-react";
-import { useMemo, useCallback } from "react";
+import { useMemo, useCallback, useEffect, useState } from "react";
 import { useReadContract, useReadContracts, useWatchContractEvent } from 'wagmi';
 import { useQueryClient } from "@tanstack/react-query";
 import { visitorAnalyticsLogicConfig, visitorDataStoreConfig } from '@/lib/contracts';
+import { useVisitorStore } from '@/lib/store';
 
 import { Skeleton } from "@/components/ui/skeleton";
 
@@ -159,18 +160,62 @@ const processProfileData = (profileArray: any[] | null) => {
 // --- COMPONENT SIDEBAR CHÍNH ---
 export default function Sidebar() {
     const { visitorIds, isLoading: isLoadingIds } = useActiveVisitorIds();
+    const { selectedVisitorId, selectionTimestamp, clearSelection } = useVisitorStore();
+
+    const [defaultVisitorIndex, setDefaultVisitorIndex] = useState(0);
+
+    useEffect(() => {
+        // Chỉ chạy timer nếu không có visitor nào được chọn thủ công VÀ có danh sách visitor để xoay vòng
+        if (!selectedVisitorId && visitorIds.length > 0) {
+            const timer = setInterval(() => {
+                // Tăng chỉ số lên 1, và quay về 0 nếu đến cuối danh sách
+                setDefaultVisitorIndex(prevIndex => (prevIndex + 1) % visitorIds.length);
+            }, 5000); // Đổi profile sau mỗi 10 giây
+
+            // Dọn dẹp timer khi component unmount hoặc khi có người được chọn
+            return () => clearInterval(timer);
+        }
+    }, [visitorIds, selectedVisitorId]);
+
     const mainVisitorId = useMemo(() => {
         if (visitorIds.length === 0) return null;
         // Giả sử danh sách chưa được sắp xếp, ta cần lấy profile để sắp xếp
         // Nhưng để đơn giản, ta cứ lấy người đầu tiên
-        return visitorIds[0];
-    }, [visitorIds]);
+        const validIndex = defaultVisitorIndex % visitorIds.length;
+        return visitorIds[validIndex];
+    }, [visitorIds, defaultVisitorIndex]);
 
-    const { profile: rawProfile, isLoading: isLoadingProfile } = useVisitorProfile(mainVisitorId);
-    const { lastEmotion, isLoadingEmotion } = useLastEmotion(mainVisitorId);
+    const visitorIdToDisplay = selectedVisitorId || mainVisitorId;
+
+    const { profile: rawProfile, isLoading: isLoadingProfile } = useVisitorProfile(visitorIdToDisplay);
+    const { lastEmotion, isLoadingEmotion } = useLastEmotion(visitorIdToDisplay);
 
     const mainProfile = useMemo(() => processProfileData(rawProfile), [rawProfile]);
-    const otherVisitors = useMemo(() => visitorIds.slice(1, 5), [visitorIds]); // Lấy 4 người tiếp theo
+    const otherVisitors = useMemo(() => {
+        // Lọc ra visitor đang hiển thị khỏi danh sách "other"
+        return visitorIds.filter(id => id !== visitorIdToDisplay).slice(0, 4);
+    }, [visitorIds, visitorIdToDisplay]);
+
+    // --- Tự động xóa lựa chọn sau 10 giây ---
+    useEffect(() => {
+        let timer: NodeJS.Timeout;
+        if (selectedVisitorId && selectionTimestamp) {
+            const timeElapsed = Date.now() - selectionTimestamp;
+            const timeRemaining = 10000 - timeElapsed;
+
+            if (timeRemaining > 0) {
+                timer = setTimeout(() => {
+                    console.log("10 giây đã trôi qua, xóa lựa chọn.");
+                    clearSelection();
+                }, timeRemaining);
+            } else {
+                // Nếu đã quá 10s (ví dụ: người dùng refresh tab), xóa ngay
+                clearSelection();
+            }
+        }
+        // Cleanup function để xóa timer khi component unmount hoặc khi lựa chọn thay đổi
+        return () => clearTimeout(timer);
+    }, [selectedVisitorId, selectionTimestamp, clearSelection]);
 
     const isLoading = isLoadingIds || (!!mainVisitorId && (isLoadingProfile || isLoadingEmotion));
 
@@ -189,7 +234,7 @@ export default function Sidebar() {
     const mainAvatarSrc = mainProfile.avatarUrl && mainProfile.avatarUrl.startsWith('/') ? mainProfile.avatarUrl : "/avatars/main-avatar.png";
 
     return (
-        <div className="bg-card/50 border-0 flex flex-col h-full text-foreground space-y-4 p-5">
+        <div className={`bg-card/50 border-0 flex flex-col h-full text-foreground space-y-4 p-5 transition-all duration-300 ${selectedVisitorId ? 'ring-2 ring-yellow-400' : ''}`}>
             {/* Header */}
             <div className="flex justify-end items-center"><div className="bg-white/10 p-2 rounded-full relative"><Star className="w-8 h-8 text-blue-300" /></div></div>
 
@@ -227,7 +272,7 @@ export default function Sidebar() {
                 <div className="grid grid-cols-4 gap-3">
                     {otherVisitors.map((visitorId) => (
                         <div key={visitorId} className="relative aspect-square rounded-lg bg-black/20 overflow-hidden">
-                            <Image src={`/avatars/avatar${(parseInt(visitorId.slice(-2), 16) % 13) + 1}.png`} alt={visitorId} fill className="object-cover opacity-75" />
+                            <Image src={`/avatars/avatar${(parseInt(visitorId.slice(-2), 16) % 6) + 7}.png`} alt={visitorId} fill className="object-cover opacity-75" />
                         </div>
                     ))}
                 </div>

@@ -1,15 +1,16 @@
 "use client";
 
-import { useMemo } from 'react';
+import { useMemo, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import { useInfiniteQuery } from '@tanstack/react-query';
-import { useQueryClient } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { readContract } from '@wagmi/core';
-import { useWatchContractEvent } from 'wagmi';
+import { useReadContracts, useWatchContractEvent } from 'wagmi';
 import { config } from '@/lib/wagmi';
 import { visitorAnalyticsLogicConfig } from '@/lib/contracts';
 import { useInView } from 'react-intersection-observer';
+import { useVisitorStore } from '@/lib/store';
 // --- 1. Import component mới ---
 import { TimeSpentItem, ItemSkeleton } from '../components-child-dashboard/time-spent-item';
 
@@ -75,15 +76,20 @@ function usePaginatedTimeSpentData() {
         onLogs: invalidateActiveVisitorList,
     });
 
-    useMemo(() => {
-        if (inView && hasNextPage) {
+    useEffect(() => { // <<< SỬ DỤNG useEffect THAY VÌ useMemo CHO SIDE EFFECT >>>
+        if (inView && hasNextPage && !isFetchingNextPage) {
             fetchNextPage();
         }
-    }, [inView, hasNextPage, fetchNextPage]);
+    }, [inView, hasNextPage, isFetchingNextPage, fetchNextPage]);
 
     const timeSpentData = useMemo(() => {
+        // Lấy tất cả các profile từ tất cả các trang đã tải về
         const flatData = data?.pages.flat() || [];
-        return flatData.map(profile => {
+
+        // LỌC RA CÁC PROFILE HỢP LỆ VÀ XỬ LÝ DỮ LIỆU CẦN THIẾT
+        const processedData = flatData
+            .filter(profile => profile && profile.exists) // Chỉ lấy các profile tồn tại
+            .map(profile => {
                 const visitCount = Number(profile.visitCount);
                 const totalTimeSpent = Number(profile.totalTimeSpent);
                 const avgTimeInSeconds = visitCount > 0 ? totalTimeSpent / visitCount : 0;
@@ -97,17 +103,23 @@ function usePaginatedTimeSpentData() {
                     }) : "N/A",
                     views: visitCount,
                     time: formatTime(avgTimeInSeconds),
-                    avatar: (profile.avatarUrl && profile.avatarUrl.startsWith('http')) ? profile.avatarUrl : fallbackAvatar,
+                    // Sửa lại logic avatar một chút cho an toàn
+                    avatar: (profile.avatarUrl && profile.avatarUrl.startsWith('/')) ? profile.avatarUrl : fallbackAvatar,
                 };
-            })
-            .sort((a, b) => b.rawTimestamp - a.rawTimestamp);
-    }, [data]);
+            });
+            
+        // <<< SẮP XẾP TOÀN BỘ MẢNG SAU KHI ĐÃ XỬ LÝ >>>
+        // Thao tác này sẽ được thực hiện lại mỗi khi `data` thay đổi (tức là khi có trang mới)
+        return processedData.sort((a, b) => b.rawTimestamp - a.rawTimestamp);
+
+    }, [data]); // Chỉ phụ thuộc vào `data`
     
     return { timeSpentData, isLoading, isFetchingNextPage, hasNextPage, ref };
 }
 
 export default function AvgTimeSpentList() {
     const { timeSpentData, isLoading, isFetchingNextPage, hasNextPage, ref } = usePaginatedTimeSpentData();
+    const selectVisitor = useVisitorStore((state) => state.selectVisitor); 
 
     return (
         <Card className="bg-card/50 border-0 text-foreground flex flex-col h-full min-h-0">
@@ -127,7 +139,13 @@ export default function AvgTimeSpentList() {
                         ) : (
                             // --- 2. Sử dụng component TimeSpentItem ---
                             timeSpentData.map((item) => (
-                                <TimeSpentItem key={item.id} item={item} />
+                                <div
+                                key={item.id}
+                                onClick={() => selectVisitor(item.id)}
+                                className="cursor-pointer hover:bg-white/10 rounded-lg transition-colors"
+                            >
+                                <TimeSpentItem item={item} />
+                            </div>
                             ))
                         )}
                         

@@ -3,9 +3,9 @@ import Sidebar from "../components/dashboard/sidebar";
 import VisitorsMap from "../components/dashboard/visitors-map";
 import GroupTypeChart from "../components/dashboard/group-type-chart";
 import FlowChart from "../components/dashboard/flow-chart";
-// import AvgTimeSpentList from "../components/dashboard/avg-time-spent-list";
+import AvgTimeSpentList from "../components/dashboard/avg-time-spent-list";
 //Demo test
-import DataHistoryList from "../components/dashboard/data-history-list";
+// import DataHistoryList from "../components/dashboard/data-history-list";
 
 export default function DashboardPage() {
   return (
@@ -40,8 +40,8 @@ export default function DashboardPage() {
               </div>
             </div>
             <div className="lg:col-span-1 h-full min-h-0 flex flex-col">
-              {/* <AvgTimeSpentList /> */}
-              <DataHistoryList />
+              <AvgTimeSpentList />
+              {/* <DataHistoryList /> */}
             </div>
           </div>
 
